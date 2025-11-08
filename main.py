@@ -18,6 +18,32 @@ bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 async def on_ready():
     print(f'Inicio con el Bot {bot.user.name}, listo!')
 
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+    await bot.process_commands(message)
+
+#AL ENTRAR AL SERVIDOR
+@bot.event
+async def on_member_join(member):
+    canal_bienvenida = discord.utils.get(member.guild.text_channels, name='bienvenidas')
+    if canal_bienvenida:
+        await canal_bienvenida.send(f'¡HOLAAA, {member.mention} BIENVENIDO AL SERVIDOR {member.guild.name}!Nos alegra tenerte aquí.')
+
+#AL SALIR DEL SERVIDOR  
+@bot.event
+async def on_member_remove(member):
+    canal_bienvenida = discord.utils.get(member.guild.text_channels, name='bienvenidas')#INV 
+    if canal_bienvenida:
+        await canal_bienvenida.send(f'¡Oh, no {member.mention} acaba de abandonar el servidor {member.guild.name}. Siempre te recordaremos!')
+
+# COMANDO !HOLA
+@bot.event
+async def hola(ctx):
+    await ctx.send(f'Hola {ctx.author.mention}, mi nombre es {bot.user.name}')
+
+
 # COMANDO !DADO
 @bot.command()
 async def dado(ctx, caras: int = 6):
